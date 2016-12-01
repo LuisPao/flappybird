@@ -10,6 +10,8 @@
         margin: 0px;
         padding: 0px;
         font-family: '幼圆', sans-serif;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
     }
     
     html,
@@ -154,6 +156,9 @@
             var speed = active.dataset['speed'];
             game.start(speed);
         });
+        window.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+        }, false);
 
     }()
     </script>
