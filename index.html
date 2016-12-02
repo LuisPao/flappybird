@@ -45,6 +45,7 @@
         width: 80px;
         border: 0 none;
         height: 50px;
+        background: #fff;
         border-radius: 5px;
         font-size: 16px;
     }
@@ -60,21 +61,20 @@
     .level {
         list-style: none;
         overflow: hidden;
-        width: 280px;
-        margin: 0 auto 20px;
+        margin-bottom: 20px;
     }
     
     .level li {
-        float: left;
+        display: inline-block;
         width: 70px;
         height: 40px;
         line-height: 40px;
-        margin: 10px;
         color: #fff;
         font-size: 16px;
         cursor: pointer;
         border: 1px solid #fff;
         border-radius: 5px;
+        margin: 0 10px;
     }
     
     .level li.active {
@@ -130,21 +130,9 @@
         var gameOver = function() {
                 start.style.display = 'block';
             },
-            isPC = function() { //判断是否为pc端
-                var userAgentInfo = navigator.userAgent;
-                var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
-                var flag = true;
-                for (var v = 0; v < Agents.length; v++) {
-                    if (userAgentInfo.indexOf(Agents[v]) > 0) {
-                        flag = false;
-                        break;
-                    }
-                }
-                return flag;
-            },
             levelcb = function(e) {
                 var targetLi = e.target;
-                var active = this.querySelector('.active');
+                var active = start.querySelector('.active');
                 active.classList.remove('active');
                 targetLi.classList.add('active');
             },
@@ -154,12 +142,11 @@
                 p.innerHTML = textArr[Math.floor(Math.random() * textArr.length)];
                 startBtn.innerHTML = '再来一次';
                 var active = level.querySelector('.active');
-                console.log(active);
                 var speed = active.dataset['speed'];
                 game.start(speed);
             };
 
-        if (isPC()) {
+        if (Fly.isPC()) {
             level.addEventListener('click', levelcb)
             startBtn.addEventListener('click', startBtncb);
         } else {

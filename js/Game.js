@@ -2,7 +2,7 @@
  * @Author: pao
  * @Date:   2016-11-28 21:21:17
  * @Last Modified by:   pao
- * @Last Modified time: 2016-11-30 23:12:37
+ * @Last Modified time: 2016-12-02 10:22:56
  */
 
 'use strict';
@@ -145,7 +145,6 @@
                 });
                 this.drawObjArr.push(pipe);
             }
-            console.log(pipeNum);
             for (i = 0; i < landNum; i++) {
                 land = new Fly.Land({
                     ctx: this.ctx,
@@ -204,9 +203,15 @@
 
         eventBind: function() {
             var _this = this;
-            this.ctx.canvas.addEventListener('click', function() {
+            var changeSpeed = function() {
                 _this.hero.speed = -.3;
-            })
+            }
+            if (Fly.isPC()) {
+                this.ctx.canvas.addEventListener('click', changeSpeed);
+            } else {
+                Fly.tap(this.ctx.canvas, changeSpeed);
+            }
+
         }
     }
     f.Game = Game;

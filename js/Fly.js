@@ -2,7 +2,7 @@
  * @Author: pao
  * @Date:   2016-11-28 21:03:25
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-02 00:08:03
+ * @Last Modified time: 2016-12-02 10:25:16
  */
 
 'use strict';
@@ -56,3 +56,15 @@ Fly.tap = function(dom, callback) {
         isMove = false;
     });
 };
+Fly.isPC = function() { //判断是否为pc端
+    var userAgentInfo = navigator.userAgent;
+    var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
+    var flag = true;
+    for (var v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+            flag = false;
+            break;
+        }
+    }
+    return flag;
+}
