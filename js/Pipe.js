@@ -2,7 +2,7 @@
  * @Author: pao
  * @Date:   2016-11-29 12:02:58
  * @Last Modified by:   pao
- * @Last Modified time: 2016-11-30 23:10:33
+ * @Last Modified time: 2016-12-02 13:15:19
  */
 
 'use strict';
@@ -12,26 +12,23 @@
         this.imgUp = options.imgUp;
         this.imgDown = options.imgDown;
         this.imgNum = options.imgNum;
+        this.flyAreaH = options.flyAreaH;
         this.imgH = this.imgUp.height;
         this.imgW = this.imgUp.width;
         this.x = options.x;
         this.UpY = 0;
         this.DownY = 0;
-        this.pipeGapY = options.pipeGapY || 130;
+        this.pipeGapY = options.pipeGapY || 120;
         this.isCounted = false;
-
         this._initY(); //创建对象的时候初始化上下管道的Y坐标
-
-
     };
     Pipe.prototype = {
         constructor: Pipe,
         _initY: function() {
-            var pipeUpH = Math.random() * 200 + 50; //先定死上管道高度范围50~250;
-
+            var pipeAverageH = (this.flyAreaH - this.pipeGapY) / 2,
+                pipeUpH = Math.random() * (this.flyAreaH - this.pipeGapY - 140) + 70; //随机生成上管道高度范围
             this.UpY = pipeUpH - this.imgH; //获取上管道的Y坐标，负值:上管道高度-图片高度
             this.DownY = pipeUpH + this.pipeGapY; //下管道Y坐标，上管道高度+上下管道之间的间隔
-
         },
         draw: function(speed, delay) {
             var ctx = this.ctx,

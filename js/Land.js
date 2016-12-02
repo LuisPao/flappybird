@@ -2,7 +2,7 @@
  * @Author: pao
  * @Date:   2016-11-29 11:14:13
  * @Last Modified by:   pao
- * @Last Modified time: 2016-11-30 23:02:01
+ * @Last Modified time: 2016-12-02 11:04:42
  */
 
 'use strict';
@@ -11,6 +11,7 @@
         this.ctx = options.ctx;
         this.img = options.img;
         this.imgNum = options.imgNum;
+        this.landH = options.landH;
         this.x = options.x;
         this.y = this.ctx.canvas.height - this.img.height;
 
@@ -27,7 +28,7 @@
             if (this.x <= -imgW) {
                 this.x += imgW * this.imgNum;
             }
-            ctx.drawImage(this.img, 0, 0, imgW, imgH, this.x, this.y, imgW, imgH);
+            ctx.drawImage(this.img, 0, 0, imgW, imgH, this.x, this.y - this.landH, imgW, imgH + this.landH);
 
         }
     }

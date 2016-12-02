@@ -2,7 +2,7 @@
  * @Author: pao
  * @Date:   2016-11-28 21:03:25
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-02 10:25:16
+ * @Last Modified time: 2016-12-02 10:36:29
  */
 
 'use strict';
@@ -34,23 +34,21 @@ Fly.tap = function(dom, callback) {
      * 2.end与start时间间隔一般在150ms内*/
     var isMove = false; //标记是否滑动过
     var startTime = 0; //记录开始触摸的时间
-    var preventDrag = function(e) {
-        e.preventDefault();
-    }
+
     dom.addEventListener("touchstart", function(e) {
         /*记录开始触摸时间--以毫秒做为单位*/
         startTime = Date.now();
     });
     dom.addEventListener("touchmove", function(e) {
         isMove = true;
-        document.body.addEventListener('touchmove', preventDrag);
+        // document.body.addEventListener('touchmove', preventDrag);
     });
     dom.addEventListener("touchend", function(e) {
         if (isMove == false && Date.now() - startTime <= 250) {
             callback && callback.call(this, e);
         }
         if (isMove) {
-            document.body.removeEventListener('touchmove', preventDrag);
+            document.body.removeEventListener('touchmove', Fly.preventDrag);
         }
         /*重置标记是否滑动*/
         isMove = false;
@@ -67,4 +65,7 @@ Fly.isPC = function() { //判断是否为pc端
         }
     }
     return flag;
+}
+Fly.preventDrag = function(e) {
+    e.preventDefault();
 }

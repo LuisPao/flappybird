@@ -43,9 +43,10 @@
     
     button {
         width: 80px;
-        border: 0 none;
-        height: 50px;
-        background: #fff;
+        border: 1px solid #fff;
+        color: rgba(255, 0, 0, 1);
+        height: 40px;
+        background: transparent;
         border-radius: 5px;
         font-size: 16px;
     }
@@ -152,6 +153,7 @@
         } else {
             Fly.tap(level, levelcb);
             Fly.tap(startBtn, startBtncb);
+            document.body.addEventListener('touchmove', Fly.preventDrag);
         }
 
         var game = new Fly.Game({

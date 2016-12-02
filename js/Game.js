@@ -2,7 +2,7 @@
  * @Author: pao
  * @Date:   2016-11-28 21:21:17
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-02 10:22:56
+ * @Last Modified time: 2016-12-02 12:41:46
  */
 
 'use strict';
@@ -29,6 +29,7 @@
             _this.imgList = imgList;
             _this.initdrawObj(imgList);
             _this.initRender();
+
         })
 
     };
@@ -62,7 +63,10 @@
                 skyImg = imgList['sky'],
                 landImg = imgList['land'],
                 skyNum = Math.ceil(this.cvW / skyImg.width) + 1,
-                landNum = Math.ceil(this.cvW / landImg.width) + 1;
+                landNum = Math.ceil(this.cvW / landImg.width) + 1,
+                landH = this.ctx.canvas.height - skyImg.height - landImg.height;
+            //增加landH目的是因为在大屏手机上sky和land之间有空隙，通过计算空隙的大小
+            //假如大于0就在绘制land的时候增加land的绘制高度
             for (; i < skyNum; i++) {
                 sky = new Fly.Sky({
                     ctx: this.ctx,
@@ -77,7 +81,8 @@
                     ctx: this.ctx,
                     img: landImg,
                     x: landImg.width * i,
-                    imgNum: landNum
+                    imgNum: landNum,
+                    landH: landH > 0 ? landH : 0
                 });
                 this.drawObjArr.push(land);
             }
@@ -99,9 +104,7 @@
                 //遍历其他要绘制的对象（sky,land）调用其绘制方法
                 _this.drawObjArr.forEach(function(value) {
                     value.draw(_this.speed, _this.delay);
-
                 })
-
 
                 //调用小鸟对象初始绘制方法
                 _this.hero.initDraw(_this.delay);
@@ -121,7 +124,10 @@
                 pipeDownImg = imgList['pipe1'],
                 skyNum = Math.ceil(this.cvW / skyImg.width) + 1,
                 landNum = Math.ceil(this.cvW / landImg.width) + 1,
-                pipeNum = Math.ceil(this.cvW / (pipeUpImg.width * 3)) + 1;
+                pipeNum = Math.ceil(this.cvW / (pipeUpImg.width * 3)) + 1,
+                landH = this.ctx.canvas.height - skyImg.height - landImg.height,
+                flyAreaH = landH > 0 ? skyImg.height : this.ctx.canvas.height - landImg.height;
+
             for (; i < skyNum; i++) {
                 sky = new Fly.Sky({
                     ctx: this.ctx,
@@ -139,7 +145,8 @@
                     imgUp: pipeUpImg,
                     imgDown: pipeDownImg,
                     x: this.ctx.canvas.width + pipeUpImg.width * 3 * i,
-                    imgNum: pipeNum
+                    imgNum: pipeNum,
+                    flyAreaH: flyAreaH
                         //管道在x方向的坐标，开始时第一个管道对象距离画布至少300
                         //每个管道对象x方向相距2倍管道的宽度，所以要*3*i
                 });
@@ -150,7 +157,8 @@
                     ctx: this.ctx,
                     img: landImg,
                     x: landImg.width * i,
-                    imgNum: landNum
+                    imgNum: landNum,
+                    landH: landH > 0 ? landH : 0
                 });
                 this.drawObjArr.push(land);
             }
@@ -211,7 +219,6 @@
             } else {
                 Fly.tap(this.ctx.canvas, changeSpeed);
             }
-
         }
     }
     f.Game = Game;
