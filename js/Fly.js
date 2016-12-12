@@ -2,7 +2,7 @@
  * @Author: pao
  * @Date:   2016-11-28 21:03:25
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-02 10:36:29
+ * @Last Modified time: 2016-12-12 08:47:31
  */
 
 'use strict';
@@ -41,7 +41,7 @@ Fly.tap = function(dom, callback) {
     });
     dom.addEventListener("touchmove", function(e) {
         isMove = true;
-        // document.body.addEventListener('touchmove', preventDrag);
+        document.body.addEventListener('touchmove', preventDrag);
     });
     dom.addEventListener("touchend", function(e) {
         if (isMove == false && Date.now() - startTime <= 250) {
