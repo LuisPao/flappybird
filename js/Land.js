@@ -2,11 +2,12 @@
  * @Author: pao
  * @Date:   2016-11-29 11:14:13
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-02 11:04:42
+ * @Last Modified time: 2016-12-20 21:23:23
  */
 
 'use strict';
-! function(f) {
+// ! function(f) {
+define(function(require, exports, module) {
     var Land = function(options) {
         this.ctx = options.ctx;
         this.img = options.img;
@@ -23,7 +24,6 @@
             var ctx = this.ctx,
                 imgW = this.img.width,
                 imgH = this.img.height;
-
             this.x -= speed * delay;
             if (this.x <= -imgW) {
                 this.x += imgW * this.imgNum;
@@ -32,6 +32,11 @@
 
         }
     }
-    f.Land = Land;
 
-}(Fly);
+    module.exports=Land;
+
+})
+
+//     f.Land = Land;
+
+// }(Fly);

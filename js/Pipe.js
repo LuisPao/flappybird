@@ -2,11 +2,13 @@
  * @Author: pao
  * @Date:   2016-11-29 12:02:58
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-02 13:15:19
+ * @Last Modified time: 2016-12-20 23:36:47
  */
 
 'use strict';
-! function(f) {
+// ! function(f) {
+define(function(require, exports, module) {
+
     var Pipe = function(options) {
         this.ctx = options.ctx;
         this.imgUp = options.imgUp;
@@ -52,16 +54,20 @@
             //绘制下管道
             ctx.drawImage(this.imgDown, 0, 0, imgW, imgH, this.x, this.DownY, imgW, imgH)
             ctx.rect(this.x, this.DownY, imgW, imgH);
-
         },
         countScore: function() {
             if (this.x < 100 - this.imgW / 2 && !this.isCounted) {
                 //管道在指定的范围内分数+1，只会加一分
-                Fly.score++;
+                window.worldScore++;
                 this.isCounted = true;
             }
         }
     }
 
-    f.Pipe = Pipe;
-}(Fly);
+    module.exports=Pipe;
+
+})
+
+
+//     f.Pipe = Pipe;
+// }(Fly);

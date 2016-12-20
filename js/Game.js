@@ -2,11 +2,13 @@
  * @Author: pao
  * @Date:   2016-11-28 21:21:17
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-02 12:41:46
+ * @Last Modified time: 2016-12-20 23:49:33
  */
 
 'use strict';
-! function(f) {
+// ! function(f) {
+define(function(require, exports, module) {
+    var Fly=require('./Fly.js')
     var Game = function(options) {
         this.ctx = options.ctx;
         this.cvW = this.ctx.canvas.width;
@@ -31,13 +33,12 @@
             _this.initRender();
 
         })
-
     };
     Game.prototype = {
         constructor: Game,
         start: function(speed) {
             this.speed = speed;
-            Fly.score = 0;
+            worldScore = 0;
             this.isStart = true;
             this.lastFrameT = Date.now();
             this.drawObjArr = [];
@@ -162,15 +163,11 @@
                 });
                 this.drawObjArr.push(land);
             }
-
             var bird = new Fly.Bird({
                 img: imgList['birds'],
                 ctx: this.ctx
             });
-
             this.hero = bird;
-
-
         },
         render: function() {
             this.isFlying = true;
@@ -181,12 +178,10 @@
                 ctx.beginPath();
                 //时间
                 _this.constrolTime();
-
                 //遍历其他要绘制的对象调用其绘制方法
                 _this.drawObjArr.forEach(function(value) {
                     value.draw(_this.speed, _this.delay);
                 })
-
                 //调用小鸟对象绘制方法
                 _this.hero.draw(_this.delay);
                 _this.strokeScore();
@@ -198,17 +193,14 @@
                 }
             }()
         },
-
         strokeScore: function() {
             var ctx = this.ctx;
             ctx.save();
             ctx.fillStyle = 'red';
             ctx.font = "24px '幼圆'";
-            ctx.fillText(this.score + Fly.score, 10, 40);
+            ctx.fillText(this.score + window.worldScore, 10, 40);
             ctx.restore();
         },
-
-
         eventBind: function() {
             var _this = this;
             var changeSpeed = function() {
@@ -221,6 +213,9 @@
             }
         }
     }
-    f.Game = Game;
+    module.exports=Game;
+})
 
-}(Fly);
+//     f.Game = Game;
+
+// }(Fly);

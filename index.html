@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width
 , user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
@@ -23,13 +23,15 @@
     <canvas id='cv'>
         您的浏览器不支持canvas
     </canvas>
-    <script src="js/Fly.js"></script>
+    <script src="js/sea.js"></script>
+    <!-- <script src="js/Fly.js"></script>
     <script src="js/Bird.js"></script>
     <script src="js/Sky.js"></script>
     <script src="js/Land.js"></script>
     <script src="js/Pipe.js"></script>
-    <script src="js/Game.js"></script>
+    <script src="js/Game.js"></script> -->
     <script>
+    var worldScore = 0;
     ! function() {
         var cv = document.getElementById('cv'),
             start = document.getElementById('start'),
@@ -39,49 +41,44 @@
             ctx = cv.getContext("2d");
         cv.width = document.body.offsetWidth;
         cv.height = document.body.offsetHeight;
-        var textArr = [
-            '哎呦,不错喔！',
-            '是男人就过100管！',
-            '是不是太难了？亲',
-            '现在还早,不急哈',
-            '行啊,有本事再过一管！',
-            '行不行啊你？',
-            '进步了喔',
-            '嫌管道太挤？怪我咯',
-            '不服来战！'
-        ];
-
-        var gameOver = function() {
-                start.style.display = 'block';
-            },
-            levelcb = function(e) {
-                var targetLi = e.target;
-                var active = start.querySelector('.active');
-                active.classList.remove('active');
-                targetLi.classList.add('active');
-            },
-            startBtncb = function(e) {
-                e.preventDefault();
-                start.style.display = 'none';
-                p.innerHTML = textArr[Math.floor(Math.random() * textArr.length)];
-                startBtn.innerHTML = '再来一次';
-                var active = level.querySelector('.active');
-                var speed = active.dataset['speed'];
-                game.start(speed);
-            };
-
-        if (Fly.isPC()) {
+        seajs.use('./js/Game.js', function(exports) {
+            var game = new exports({
+                ctx: ctx,
+                callback: function() {
+                    start.style.display = 'block';
+                }
+            });
+            var levelcb = function(e) {
+                    var targetLi = e.target;
+                    var active = start.querySelector('.active');
+                    active.classList.remove('active');
+                    targetLi.classList.add('active');
+                },
+                startBtncb = function(e) {
+                    e.preventDefault();
+                    var textArr = [
+                        '哎呦,不错喔！',
+                        '是男人就过100管！',
+                        '是不是太难了？亲',
+                        '现在还早,不急哈',
+                        '行啊,有本事再过一管！',
+                        '行不行啊你？',
+                        '进步了喔',
+                        '嫌管道太挤？怪我咯',
+                        '不服来战！'
+                    ];
+                    start.style.display = 'none';
+                    p.innerHTML = textArr[Math.floor(Math.random() * textArr.length)];
+                    startBtn.innerHTML = '再来一次';
+                    var active = level.querySelector('.active');
+                    var speed = active.dataset['speed'];
+                    game.start(speed);
+                };
             level.addEventListener('click', levelcb)
             startBtn.addEventListener('click', startBtncb);
-        } else {
-            Fly.tap(level, levelcb);
-            Fly.tap(startBtn, startBtncb);
-        }
+        })
 
-        var game = new Fly.Game({
-            ctx: ctx,
-            callback: gameOver
-        });
+
 
 
     }()

@@ -2,11 +2,12 @@
  * @Author: pao
  * @Date:   2016-11-28 20:37:22
  * @Last Modified by:   pao
- * @Last Modified time: 2016-11-30 23:01:15
+ * @Last Modified time: 2016-12-20 21:20:18
  */
 
 'use strict';
-! function(f) {
+// ! function(f) {
+define(function(require, exports, module) {
     var Sky = function(options) {
         this.ctx = options.ctx;
         this.img = options.img;
@@ -24,10 +25,13 @@
             if (this.x <= -imgW) {
                 this.x += imgW * this.imgNum;
             }
-
             ctx.drawImage(this.img, 0, 0, imgW, imgH, this.x, this.y, imgW, imgH)
         }
     }
 
-    f.Sky = Sky;
-}(Fly)
+    module.exports=Sky;
+
+})
+
+// f.Sky = Sky;
+// }(Fly)
