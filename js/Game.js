@@ -2,13 +2,12 @@
  * @Author: pao
  * @Date:   2016-11-28 21:21:17
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-20 23:49:33
+ * @Last Modified time: 2016-12-21 00:15:51
  */
 
 'use strict';
-// ! function(f) {
 define(function(require, exports, module) {
-    var Fly=require('./Fly.js')
+    var Fly = require('./Fly.js')
     var Game = function(options) {
         this.ctx = options.ctx;
         this.cvW = this.ctx.canvas.width;
@@ -26,12 +25,11 @@ define(function(require, exports, module) {
         this.score = '分数:';
         var _this = this;
         this.eventBind();
-
         Fly.loadImg(function(imgList) {
             _this.imgList = imgList;
             _this.initdrawObj(imgList);
             _this.initRender();
-
+            _this.selectDifficulty();
         })
     };
     Game.prototype = {
@@ -56,7 +54,6 @@ define(function(require, exports, module) {
             this.curFrameT = Date.now();
             this.delay = this.curFrameT - this.lastFrameT;
             this.lastFrameT = this.curFrameT;
-
         },
         initdrawObj: function(imgList) {
             var i = 0,
@@ -114,7 +111,6 @@ define(function(require, exports, module) {
                 }
 
             }();
-
         },
         drawObj: function(imgList) { //创建要绘制的所有对象
             var i = 0,
@@ -180,9 +176,9 @@ define(function(require, exports, module) {
                 _this.constrolTime();
                 //遍历其他要绘制的对象调用其绘制方法
                 _this.drawObjArr.forEach(function(value) {
-                    value.draw(_this.speed, _this.delay);
-                })
-                //调用小鸟对象绘制方法
+                        value.draw(_this.speed, _this.delay);
+                    })
+                    //调用小鸟对象绘制方法
                 _this.hero.draw(_this.delay);
                 _this.strokeScore();
 
@@ -211,11 +207,47 @@ define(function(require, exports, module) {
             } else {
                 Fly.tap(this.ctx.canvas, changeSpeed);
             }
+        },
+        selectDifficulty: function() {
+            var start = document.getElementById('start'),
+                startBtn = start.querySelector('button'),
+                p = start.querySelector('p'),
+                level = start.querySelector('ul');
+            var levelcb = function(e) {
+                var targetLi = e.target;
+                var active = start.querySelector('.active');
+                active.classList.remove('active');
+                targetLi.classList.add('active');
+            };
+            var that = this;
+            var textArr = [
+                    '哎呦,不错喔！',
+                    '是男人就过100管！',
+                    '是不是太难了？亲',
+                    '现在还早,不急哈',
+                    '行啊,有本事再过一管！',
+                    '行不行啊你？',
+                    '进步了喔',
+                    '嫌管道太挤？怪我咯',
+                    '不服来战！'
+                ];
+            var startBtncb = function(e) {
+                e.preventDefault();
+                start.style.display = 'none';
+                p.innerHTML = textArr[Math.floor(Math.random() * textArr.length)];
+                startBtn.innerHTML = '再来一次';
+                var active = level.querySelector('.active');
+                var speed = active.dataset['speed'];
+                that.start(speed);
+            };
+            if (Fly.isPC()) {
+                level.addEventListener('click', levelcb)
+                startBtn.addEventListener('click', startBtncb);
+            } else {
+                Fly.tap(level, levelcb);
+                Fly.tap(startBtn, startBtncb);  
+            }
         }
     }
-    module.exports=Game;
+    module.exports = Game;
 })
-
-//     f.Game = Game;
-
-// }(Fly);

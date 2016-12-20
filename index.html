@@ -24,20 +24,10 @@
         您的浏览器不支持canvas
     </canvas>
     <script src="js/sea.js"></script>
-    <!-- <script src="js/Fly.js"></script>
-    <script src="js/Bird.js"></script>
-    <script src="js/Sky.js"></script>
-    <script src="js/Land.js"></script>
-    <script src="js/Pipe.js"></script>
-    <script src="js/Game.js"></script> -->
     <script>
     var worldScore = 0;
     ! function() {
-        var cv = document.getElementById('cv'),
-            start = document.getElementById('start'),
-            startBtn = start.querySelector('button'),
-            p = start.querySelector('p'),
-            level = start.querySelector('ul'),
+        var cv = document.getElementById('cv');
             ctx = cv.getContext("2d");
         cv.width = document.body.offsetWidth;
         cv.height = document.body.offsetHeight;
@@ -48,39 +38,7 @@
                     start.style.display = 'block';
                 }
             });
-            var levelcb = function(e) {
-                    var targetLi = e.target;
-                    var active = start.querySelector('.active');
-                    active.classList.remove('active');
-                    targetLi.classList.add('active');
-                },
-                startBtncb = function(e) {
-                    e.preventDefault();
-                    var textArr = [
-                        '哎呦,不错喔！',
-                        '是男人就过100管！',
-                        '是不是太难了？亲',
-                        '现在还早,不急哈',
-                        '行啊,有本事再过一管！',
-                        '行不行啊你？',
-                        '进步了喔',
-                        '嫌管道太挤？怪我咯',
-                        '不服来战！'
-                    ];
-                    start.style.display = 'none';
-                    p.innerHTML = textArr[Math.floor(Math.random() * textArr.length)];
-                    startBtn.innerHTML = '再来一次';
-                    var active = level.querySelector('.active');
-                    var speed = active.dataset['speed'];
-                    game.start(speed);
-                };
-            level.addEventListener('click', levelcb)
-            startBtn.addEventListener('click', startBtncb);
         })
-
-
-
-
     }()
     </script>
 </body>
