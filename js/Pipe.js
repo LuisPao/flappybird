@@ -2,7 +2,7 @@
  * @Author: pao
  * @Date:   2016-11-29 12:02:58
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-20 23:36:47
+ * @Last Modified time: 2016-12-22 10:28:41
  */
 
 'use strict';
@@ -22,6 +22,7 @@ define(function(require, exports, module) {
         this.DownY = 0;
         this.pipeGapY = options.pipeGapY || 120;
         this.isCounted = false;
+        this.listener=[];//存放订阅者
         this._initY(); //创建对象的时候初始化上下管道的Y坐标
     };
     Pipe.prototype = {
@@ -38,13 +39,12 @@ define(function(require, exports, module) {
                 imgH = this.imgH;
 
             this.x -= speed * delay
-
             if (this.x < -imgW) {
                 this.x += imgW * 3 * this.imgNum;
                 this._initY();
                 this.isCounted = false;
             }
-            this.countScore();
+            this.getScore();//每次绘制都检测是否得分
             // console.log(this.x);
             //绘制上管道
             ctx.drawImage(this.imgUp, 0, 0, imgW, imgH, this.x, this.UpY, imgW, imgH)
@@ -55,15 +55,22 @@ define(function(require, exports, module) {
             ctx.drawImage(this.imgDown, 0, 0, imgW, imgH, this.x, this.DownY, imgW, imgH)
             ctx.rect(this.x, this.DownY, imgW, imgH);
         },
-        countScore: function() {
-            if (this.x < 100 - this.imgW / 2 && !this.isCounted) {
+        getScore:function(){
+             if (this.x < 100 - this.imgW / 2 && !this.isCounted) {
                 //管道在指定的范围内分数+1，只会加一分
-                window.worldScore++;
                 this.isCounted = true;
+                this.trigger();
             }
+        },
+        addListener:function(option){//添加订阅者，每个订阅者包括函数和其执行的上下文
+            this.listener.push(option);
+        },
+        trigger:function(){//触发函数，遍历所有订阅者的信息，并执行
+            this.listener.forEach(function(value,index){
+                value.cb.apply(value.ctx);
+            })
         }
     }
-
     module.exports=Pipe;
 
 })

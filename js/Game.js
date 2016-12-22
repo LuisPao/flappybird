@@ -2,7 +2,7 @@
  * @Author: pao
  * @Date:   2016-11-28 21:21:17
  * @Last Modified by:   pao
- * @Last Modified time: 2016-12-21 00:15:51
+ * @Last Modified time: 2016-12-22 10:28:53
  */
 
 'use strict';
@@ -22,7 +22,12 @@ define(function(require, exports, module) {
         this.isFlying = false;
         this.isStart = false;
         this.imgList = null;
-        this.score = '分数:';
+        this.scoreTxt = '分数:';
+        this.score=0;
+        this.startEle = document.getElementById('start'); //遮罩元素
+        this.startBtn = start.querySelector('button'); //遮罩元素上的btn
+        this.p = start.querySelector('p'); //存放激励语的p元素
+        this.level = start.querySelector('ul'); //设置游戏难度的ul
         var _this = this;
         this.eventBind();
         Fly.loadImg(function(imgList) {
@@ -36,7 +41,7 @@ define(function(require, exports, module) {
         constructor: Game,
         start: function(speed) {
             this.speed = speed;
-            worldScore = 0;
+            this.score = 0;
             this.isStart = true;
             this.lastFrameT = Date.now();
             this.drawObjArr = [];
@@ -47,6 +52,19 @@ define(function(require, exports, module) {
             var ctx = this.ctx;
             if (this.hero.y <= 0 || this.hero.y >= ctx.canvas.height - 112 || ctx.isPointInPath(this.hero.x, this.hero.y)) {
                 this.isFlying = false;
+                var textArr = [
+                    '哎呦,不错喔！',
+                    '是男人就过100管！',
+                    '是不是太难了？亲',
+                    '现在还早,不急哈',
+                    '行啊,有本事再过一管！',
+                    '行不行啊你？',
+                    '进步了喔',
+                    '嫌管道太挤？怪我咯',
+                    '不服来战！'
+                ];
+                this.p.innerHTML = textArr[Math.floor(Math.random() * textArr.length)];
+                this.startBtn.innerHTML = '再来一次';
                 this.cb();
             }
         },
@@ -96,14 +114,12 @@ define(function(require, exports, module) {
                 _this = this;
             ! function draw() {
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
                 _this.constrolTime();
 
                 //遍历其他要绘制的对象（sky,land）调用其绘制方法
                 _this.drawObjArr.forEach(function(value) {
                     value.draw(_this.speed, _this.delay);
                 })
-
                 //调用小鸟对象初始绘制方法
                 _this.hero.initDraw(_this.delay);
                 if (!_this.isStart) {
@@ -111,6 +127,9 @@ define(function(require, exports, module) {
                 }
 
             }();
+        },
+        countScore:function(){//计算分数,作为
+            this.score++;
         },
         drawObj: function(imgList) { //创建要绘制的所有对象
             var i = 0,
@@ -134,8 +153,6 @@ define(function(require, exports, module) {
                 });
                 this.drawObjArr.push(sky);
             }
-
-
             for (i = 0; i < pipeNum; i++) {
                 pipe = new Fly.Pipe({
                     ctx: this.ctx,
@@ -148,6 +165,7 @@ define(function(require, exports, module) {
                         //每个管道对象x方向相距2倍管道的宽度，所以要*3*i
                 });
                 this.drawObjArr.push(pipe);
+                pipe.addListener({ctx:this,cb:this.countScore});//为每个管道对象添加订阅者信息
             }
             for (i = 0; i < landNum; i++) {
                 land = new Fly.Land({
@@ -194,7 +212,7 @@ define(function(require, exports, module) {
             ctx.save();
             ctx.fillStyle = 'red';
             ctx.font = "24px '幼圆'";
-            ctx.fillText(this.score + window.worldScore, 10, 40);
+            ctx.fillText(this.scoreTxt + this.score, 10, 40);
             ctx.restore();
         },
         eventBind: function() {
@@ -209,43 +227,26 @@ define(function(require, exports, module) {
             }
         },
         selectDifficulty: function() {
-            var start = document.getElementById('start'),
-                startBtn = start.querySelector('button'),
-                p = start.querySelector('p'),
-                level = start.querySelector('ul');
+            var that = this;
             var levelcb = function(e) {
                 var targetLi = e.target;
-                var active = start.querySelector('.active');
+                var active = that.startEle.querySelector('.active');
                 active.classList.remove('active');
                 targetLi.classList.add('active');
             };
-            var that = this;
-            var textArr = [
-                    '哎呦,不错喔！',
-                    '是男人就过100管！',
-                    '是不是太难了？亲',
-                    '现在还早,不急哈',
-                    '行啊,有本事再过一管！',
-                    '行不行啊你？',
-                    '进步了喔',
-                    '嫌管道太挤？怪我咯',
-                    '不服来战！'
-                ];
-            var startBtncb = function(e) {
+            var startBtncb = function(e) {//开始(再来一次)绑定的函数
                 e.preventDefault();
-                start.style.display = 'none';
-                p.innerHTML = textArr[Math.floor(Math.random() * textArr.length)];
-                startBtn.innerHTML = '再来一次';
-                var active = level.querySelector('.active');
+                that.startEle.style.display = 'none';//隐藏‘开始’遮罩
+                var active = that.level.querySelector('.active');//获取难度系数的值
                 var speed = active.dataset['speed'];
-                that.start(speed);
+                that.start(speed);//将难度系数传递给整个游戏,并开始游戏
             };
             if (Fly.isPC()) {
-                level.addEventListener('click', levelcb)
-                startBtn.addEventListener('click', startBtncb);
+                this.level.addEventListener('click', levelcb);
+                this.startBtn.addEventListener('click', startBtncb);
             } else {
-                Fly.tap(level, levelcb);
-                Fly.tap(startBtn, startBtncb);  
+                Fly.tap(this.level, levelcb);
+                Fly.tap(this.startBtn, startBtncb);
             }
         }
     }
